@@ -7,9 +7,7 @@
                 <div class="card">
                     <div class="card-header">{{ __('welcome') }}</div>
 
-                    <div class="card-body">
-                        This is Real Time Application .....
-                     </div>
+                    <div class="card-body"> This is Real Time Application .....  </div>
                 </div>
             </div>
         </div>
