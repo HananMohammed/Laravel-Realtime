@@ -1,5 +1,5 @@
 window._ = require('lodash');
-
+window.base_url = '/api/v1/'
 try {
     require('bootstrap');
 } catch (e) {}
