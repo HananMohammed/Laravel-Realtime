@@ -42,7 +42,7 @@ class GameExcutor extends Command
     {
         while (true){
             broadcast(new RemainingTimeChanged( $this->time .' s'));
-            $this->time --;
+            $this->time--;
             sleep(1);
             if($this->time === 0){
                 $this->time = 'Waiting To Start';
