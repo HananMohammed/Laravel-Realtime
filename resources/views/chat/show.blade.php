@@ -44,5 +44,28 @@
 @endsection
 @push('scripts')
     <script>
+        //presence channel
+        //handle list of user connected yo current chat
+        //must know the current user joined on that channel
+        const usersElement = document.getElementById('users');
+        Echo.join('chat')
+            .here((users)=>{
+                users.forEach((user)=>{
+                    let element = document.createElement('li');
+                    element.setAttribute('id', user.id)
+                    element.innerText = user.name
+                    usersElement.appendChild(element)
+                })
+            })
+            .joining((user)=>{
+                let element = document.createElement('li');
+                element.setAttribute('id', user.id)
+                element.innerText = user.name
+                usersElement.appendChild(element)
+            })
+            .leaving((user)=>{
+                const element = document.getElementById(e.user.id)
+                element.parentNode.removeChild(element)
+            })
     </script>
 @endpush
