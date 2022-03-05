@@ -1,5 +1,12 @@
 @extends('layouts.app')
 @push('styles')
+    <style>
+        #users>li {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+    </style>
 @endpush
 @section('content')
     <div class="container-fluid">
@@ -13,8 +20,6 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <ul id="messages" class="list-unstyled overflow-auto" style="height: 50vh">
-                                            <li>Test 1: Hello</li>
-                                            <li>Test 2: HHie </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -53,6 +58,7 @@
                 users.forEach((user) => {
                     let element = document.createElement('li');
                     element.setAttribute('id', user.id)
+                    element.setAttribute('onclick', 'greetUser("' + user.id + '")')
                     element.innerText = user.name
                     usersElement.appendChild(element)
                 })
@@ -60,6 +66,7 @@
             .joining((user) => {
                 let element = document.createElement('li');
                 element.setAttribute('id', user.id)
+                element.setAttribute('onclick', 'greetUser("' + user.id + '")')
                 element.innerText = user.name
                 usersElement.appendChild(element)
             })
@@ -67,21 +74,36 @@
                 const element = document.getElementById(user.id)
                 element.parentNode.removeChild(element)
             })
-            .listen('MessageSent', (e)=>{
+            .listen('MessageSent', (e) => {
                 let element = document.createElement('li');
-                element.innerText = e.message
+                element.innerText = e.user.name + ' : ' + e.message
                 messagesElement.appendChild(element)
             })
     </script>
     <script>
         const messageElement = document.getElementById('message');
         const sendElement = document.getElementById('send');
-        sendElement.addEventListener('click', (e)=>{
+        sendElement.addEventListener('click', (e) => {
             e.preventDefault();
-            window.axios.post('/chat/message',{
+            window.axios.post('/chat/message', {
                 message: messageElement.value,
             });
             messageElement.value = '';
+        })
+    </script>
+    <script>
+        function greetUser(id) {
+            window.axios.post('/chat/greet/' + id);
+        }
+    </script>
+    <script>
+        //only authenticated user can listen for its own messages
+        Echo.private("chat.greet.{{ auth()->user()->id }}").listen('GreetingSent', (e) => {
+            let element = document.createElement('li');
+            console.log(e.message)
+            element.innerText = e.message
+            element.classList.add('text-success')
+            messagesElement.appendChild(element)
         })
     </script>
 @endpush

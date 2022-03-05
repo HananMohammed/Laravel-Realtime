@@ -5,16 +5,16 @@ namespace App\Events;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MessageSent implements ShouldBroadcast
+class GreetingSent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $user;
+    protected $user;
     public $message;
     /**
      * Create a new event instance.
@@ -36,7 +36,7 @@ class MessageSent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        Log::debug("User: { $this->user->name }, Send Message :{ $this->message }");
-        return new PresenceChannel('chat');
+        Log::debug($this->message);
+        return new PrivateChannel("chat.greet.{$this->user->id}");
     }
 }
