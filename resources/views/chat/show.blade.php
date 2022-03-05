@@ -26,13 +26,10 @@
                                         <button id="send" type="submit" class="btn btn-primary btn-block">Send</button>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="col-2">
                                 <p><strong> Online Now</strong></p>
                                 <ul id="users" class="list-unstyled overflow-auto text-info" style="height: 45vh">
-                                    <li>Test1</li>
-                                    <li>Test2</li>
                                 </ul>
                             </div>
                         </div>
@@ -45,27 +42,46 @@
 @push('scripts')
     <script>
         //presence channel
-        //handle list of user connected yo current chat
-        //must know the current user joined on that channel
+        //handle list of user connected your current chat
+        //must know the current user joined on that channel on the same socket
+        //join : recieves the name of the presence channel we are using 
         const usersElement = document.getElementById('users');
+        const messagesElement = document.getElementById('messages');
         Echo.join('chat')
-            .here((users)=>{
-                users.forEach((user)=>{
+            .here((users) => {
+                console.log(users)
+                users.forEach((user) => {
                     let element = document.createElement('li');
                     element.setAttribute('id', user.id)
                     element.innerText = user.name
                     usersElement.appendChild(element)
                 })
             })
-            .joining((user)=>{
+            .joining((user) => {
                 let element = document.createElement('li');
                 element.setAttribute('id', user.id)
                 element.innerText = user.name
                 usersElement.appendChild(element)
             })
-            .leaving((user)=>{
-                const element = document.getElementById(e.user.id)
+            .leaving((user) => {
+                const element = document.getElementById(user.id)
                 element.parentNode.removeChild(element)
             })
+            .listen('MessageSent', (e)=>{
+                let element = document.createElement('li');
+                element.innerText = e.message
+                messagesElement.appendChild(element)
+            })
+    </script>
+    <script>
+        const messageElement = document.getElementById('message');
+        const sendElement = document.getElementById('send');
+        sendElement.addEventListener('click', (e)=>{
+            e.preventDefault();
+            window.axios.post('/chat/message',{
+                message: messageElement.value,
+            });
+            messageElement.value = '';
+        })
     </script>
 @endpush

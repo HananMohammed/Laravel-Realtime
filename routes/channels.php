@@ -24,6 +24,4 @@ Broadcast::channel('notifications', function ($user) {
 Broadcast::channel('chat', function ($user) {
     if ($user != null)
         return  ['id'=>$user->id, 'name'=> $user->name];
-    
-    return $user != null ;
 });
