@@ -100,7 +100,6 @@
         //only authenticated user can listen for its own messages
         Echo.private("chat.greet.{{ auth()->user()->id }}").listen('GreetingSent', (e) => {
             let element = document.createElement('li');
-            console.log(e.message)
             element.innerText = e.message
             element.classList.add('text-success')
             messagesElement.appendChild(element)
